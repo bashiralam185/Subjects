@@ -1,0 +1,2 @@
+single,married,complicated,don't know
+40,30,15,20
