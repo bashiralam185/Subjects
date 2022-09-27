@@ -3,7 +3,12 @@
 var VSHADER_SOURCE =
   'attribute vec4 a_Position;\n' +
   'uniform mat4 u_ModelMatrix;\n' +
+  'uniform float u_CosB, u_SinB;\n'+
   'void main() {\n' +
+  '  gl_Position.x = a_Position.x * u_CosB - a_Position.y * u_SinB;\n'+
+   '  gl_Position.y = a_Position.x * u_SinB + a_Position.y * u_CosB;\n'+
+   '  gl_Position.z = a_Position.z;\n' +
+   '  gl_Position.w = 1.0;\n' +
   '  gl_Position = u_ModelMatrix * a_Position;\n' +
   '}\n';
 
@@ -41,10 +46,10 @@ function main() {
   var modelMatrix = new Matrix4();
 
   // Calculate a model matrix
-  var ANGLE = 60.0; // The rotation angle
-  var Tx = 0.5;     // Translation distance
+  var ANGLE = 30.0; // The rotation angle
+  // var Tx = 0.5;     // Translation distance
   modelMatrix.setRotate(ANGLE, 0, 0, 1);  // Set rotation matrix
-  modelMatrix.translate(Tx, 0, 0);        // Multiply modelMatrix by the calculated translation matrix
+  // modelMatrix.translate(Tx, 0, 0);        // Multiply modelMatrix by the calculated translation matrix
 
   // Pass the model matrix to the vertex shader
   var u_ModelMatrix = gl.getUniformLocation(gl.program, 'u_ModelMatrix');
@@ -92,7 +97,6 @@ function initVertexBuffers(gl) {
 
   // Enable the assignment to a_Position variable
   gl.enableVertexAttribArray(a_Position);
-
   return n;
 }
 

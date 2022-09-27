@@ -44,10 +44,10 @@ public class MainActivity extends AppCompatActivity {
                 int num2 = Integer.parseInt(mEditText2.getText().toString());
 
                 int area = num1 * num2;
-                int area2 =( num1 + num2)*2;
+                int parameter =( num1 + num2)*2;
 
                 mTextViewResult.setText(String.valueOf(area));
-                mTextViewResult2.setText(String.valueOf(area2));
+                mTextViewResult2.setText(String.valueOf(parameter));
             }
         });
 
