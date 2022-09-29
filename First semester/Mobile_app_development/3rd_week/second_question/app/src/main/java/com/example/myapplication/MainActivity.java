@@ -12,7 +12,10 @@ public class MainActivity extends AppCompatActivity {
     private EditText mEditText1;
     private EditText mEditText2;
     private TextView mTextViewResult;
-    private TextView mTextViewResult2;
+    private EditText Second_first;
+    private EditText Second_second;
+    private TextView secondQuestion;
+
     private Button mButtonAdd;
 
     @Override
@@ -23,7 +26,13 @@ public class MainActivity extends AppCompatActivity {
         mEditText1 = findViewById(R.id.editTextNumberDecimal);
         mEditText2 = findViewById(R.id.editTextNumberDecimal2);
         mTextViewResult = findViewById(R.id.textView4);
-        mTextViewResult2 = findViewById(R.id.textView6);
+
+        Second_first = findViewById(R.id.second_question1);
+        secondQuestion = findViewById(R.id.second_ans);
+
+
+
+
 
 
         mButtonAdd = findViewById(R.id.button);
@@ -43,11 +52,32 @@ public class MainActivity extends AppCompatActivity {
                 int num1 = Integer.parseInt(mEditText1.getText().toString());
                 int num2 = Integer.parseInt(mEditText2.getText().toString());
 
-                int area = num1 * num2;
-                int parameter =( num1 + num2)*2;
+                if (num1 == num2){
+                    mTextViewResult.setText(String.valueOf("Both Are equal"));
+                }
+                else if ( num1 < num2){
+                    mTextViewResult.setText(String.valueOf("A is less then B"));
+                }
+                else{
+                    mTextViewResult.setText(String.valueOf("A is greater then B"));
+                }
 
-                mTextViewResult.setText(String.valueOf(area));
-                mTextViewResult2.setText(String.valueOf(parameter));
+
+
+
+
+                int num3 = Integer.parseInt(Second_first.getText().toString());
+                int i = 1;
+                int k = 1;
+                String s = "";
+                while(k <  num3){
+                    s = s + String.valueOf(i*i) + ' ';
+                    i = i +1;
+                    k = i* i;
+                }
+                secondQuestion.setText(String.valueOf(s));
+
+
             }
         });
 
