@@ -1,6 +1,6 @@
 // ColoredTriangle.js (c) 2012 matsuda
 // Vertex shader program
-var VSHADER_SOURCE = 
+var VSHADER_SOURCE =
   'attribute vec4 a_Position;\n' +
   'attribute vec4 a_Color;\n' +
   'varying vec4 v_Color;\n' +
@@ -10,13 +10,13 @@ var VSHADER_SOURCE =
   '}\n';
 
 // Fragment shader program
-var FSHADER_SOURCE = 
+var FSHADER_SOURCE =
   'precision mediump float;\n' +
   'varying vec4 v_Color;\n' +
   'void main() {\n' +
   '  gl_FragColor = v_Color;\n' +
   '}\n';
-  
+
 function main() {
   // Retrieve <canvas> element
   var canvas = document.getElementById('webgl');
@@ -51,29 +51,33 @@ function main() {
   gl.drawArrays(gl.TRIANGLE_FAN, 0, n);
 }
 
-
-
-
-
 function initVertexBuffers(gl) {
-  var verticesColors = new Float32Array([
-    // Vertex coordinates and color
-     0.0,  0.0,  0.4,  0.4,  0.4, 
-    -0.4, 0.6,  0.0,  0.8,  0.0, 
-     -0.85, 0.0,  0.0,  0.6,  0.6, 
-     -0.4, -0.6,  0.0,  0.0,  1.0,
-     0.4, -0.6,  0.6,  0.0,  0.6,
-    //  0.5, -0.5,  0.0,  0.0,  1.0,
-     0.85, 0.0,  0.9,  0.0,  0.0,
-     0.4, 0.6,  0.6,  0.6,  0, 
-     -0.4, 0.6,  0.0,  0.8,  0.0, 
 
-  ]);
 
-  var n = 8;
+  var ver = []
+  const colors = [[0.9, 0.0, 0.0], [0.6, 0.6, 0.0], [0.0, 0.8, 0.0], [0.0, 0.6, 0.6], [0.0, 0.0, 1.0], [0.6, 0.0, 0.6], [0.9, 0.0, 0.0], [0.6, 0.6, 0.0]]
+  for (i = 0; i <= 360; ++i) {
+    var r = 0.5
+    var radian = Math.PI * i / 180.0; // Convert to radians
+    var x = r * Math.cos(radian);
+    var y = r * Math.sin(radian);
+    ver.push(x)
+    ver.push(y)
+    r = (i / 360) * 6; // varies from 0 to 6
+    k = Math.floor(r);
+    fac = 1 - (r - k); // varies from 0 to 1
+    ver.push(colors[k][0] * fac + colors[k + 1][0] * (1 - fac))
+    ver.push(colors[k][1] * fac + colors[k + 1][1] * (1 - fac))
+    ver.push(colors[k][2] * fac + colors[k + 1][2] * (1 - fac))
+
+  }
+  var verticesColors = new Float32Array(
+    ver
+  );
+  var n = 360;
 
   // Create a buffer object
-  var vertexColorBuffer = gl.createBuffer();  
+  var vertexColorBuffer = gl.createBuffer();
   if (!vertexColorBuffer) {
     console.log('Failed to create the buffer object');
     return false;
@@ -83,12 +87,7 @@ function initVertexBuffers(gl) {
   gl.bindBuffer(gl.ARRAY_BUFFER, vertexColorBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, verticesColors, gl.STATIC_DRAW);
 
-
-
-
-
   var FSIZE = verticesColors.BYTES_PER_ELEMENT;
-
   //Get the storage location of a_Position, assign and enable buffer
   var a_Position = gl.getAttribLocation(gl.program, 'a_Position');
   if (a_Position < 0) {
@@ -100,7 +99,7 @@ function initVertexBuffers(gl) {
 
   // Get the storage location of a_Position, assign buffer and enable
   var a_Color = gl.getAttribLocation(gl.program, 'a_Color');
-  if(a_Color < 0) {
+  if (a_Color < 0) {
     console.log('Failed to get the storage location of a_Color');
     return -1;
   }
@@ -112,4 +111,3 @@ function initVertexBuffers(gl) {
 
   return n;
 }
-

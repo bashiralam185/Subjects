@@ -16,6 +16,12 @@ public class MainActivity extends AppCompatActivity {
     private EditText Second_second;
     private TextView secondQuestion;
 
+
+    private EditText Last_Question1;
+    private EditText last_Question2;
+    private TextView last_Result;
+    private TextView last_Result2;
+
     private Button mButtonAdd;
 
     @Override
@@ -30,7 +36,10 @@ public class MainActivity extends AppCompatActivity {
         Second_first = findViewById(R.id.second_question1);
         secondQuestion = findViewById(R.id.second_ans);
 
-
+        Last_Question1 = findViewById(R.id.last_question1);
+        last_Question2 = findViewById(R.id.last_question2);
+        last_Result = findViewById(R.id.last_result);
+        last_Result2 = findViewById(R.id.last_result2);
 
 
 
@@ -63,9 +72,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-
-
-
                 int num3 = Integer.parseInt(Second_first.getText().toString());
                 int i = 1;
                 int k = 1;
@@ -76,6 +82,24 @@ public class MainActivity extends AppCompatActivity {
                     k = i* i;
                 }
                 secondQuestion.setText(String.valueOf(s));
+
+
+
+
+                float n1;
+                float n2;
+                int res;
+                int remainder;
+                n1 = Float.parseFloat(Last_Question1.getText().toString());
+                n2 = Float.parseFloat(last_Question2.getText().toString());
+                if (n2 == 0){
+                    last_Result.setText("Can't divide by 0!" );
+                }
+                else {
+                    res = (int) ((int) n1 / n2);
+                    remainder = (int) (n1 % n2);
+                    last_Result.setText(String.valueOf(res)+", remainder " + String.valueOf(remainder) );
+                }
 
 
             }
