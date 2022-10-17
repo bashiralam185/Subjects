@@ -1,3 +1,4 @@
+#include <iostream>
 #include "bmp.h"
 #include <math.h>
 #include <string.h>
@@ -7,7 +8,7 @@
 
 unsigned char image[image_size];
 float color[4] = {0., 1., 1., 1.}; // cyan
-int gamma_correction = 0, transparent = 0.5;
+int gamma_correction = 0, transparent = 1;
 int triangles[7][3] = {
 		{0, 1, 2},   // ABC
 		{0, 3, 1},   // ADB
@@ -34,6 +35,8 @@ double vertices[14][3] = {
 		{0., 0., 0.}        // Q 13, the other vertex on the horizontal cutting line
 		};
 
+// changing the size of the colors array from 7 x4 to 14x4 to get differet
+// colors for each of the vertex
 double colors[14][4] = {
 	{1., 0., 0., 1.}, // A 0
 	{1., .7, 0., 1.}, // B 1
@@ -48,7 +51,7 @@ double colors[14][4] = {
 	{1., 0., 1., .5}, // K 10
 	{1., 0., 1., .5}, // L 11
 	{1., 0., 1., .5}, // M 12
-	{0., 0., 0., 1.}, // Q 13
+	{0., 0., 0., 1.}, 
 	};
 
 double ZBuffer[width][height];
@@ -59,6 +62,7 @@ void set_pixel_alpha_z(int x, int y, double r, double g, double b, double a, dou
    float transp = (1 - a)/255.;
    if (x >= 0 && x < width && y >= 0 && y < height && z >= ZBuffer[x][y]) {
 		ZBuffer[x][y] = z;
+		
    	index = 3*(x + width*y);
       if (gamma_correction) {
          image[index  ] = (unsigned char) (255*sqrt(a*r + transp*(float) image[index  ]));
@@ -109,27 +113,68 @@ void draw_horizontal_edge_triangle(int i1, int i2, int i3, int kind,
 			get_line_equation(y1, y3, x1, x3, &m_x_right, &b_x_right);
 			get_line_equation(y1, y2, z1, z2, &m_z_left, &b_z_left);
 			get_line_equation(y1, y3, z1, z3, &m_z_right, &b_z_right);
+
+			// adding for rgb 
+			get_line_equation(y1, y2, colors[i1][0], colors[i2][0], &m_r_left, &b_r_left);
+			get_line_equation(y1, y3, colors[i1][0], colors[i3][0], &m_r_right, &b_r_right);
+			get_line_equation(y1, y2, colors[i1][1], colors[i2][1], &m_g_left, &b_g_left);
+			get_line_equation(y1, y3, colors[i1][1], colors[i3][1], &m_g_right, &b_g_right);
+			get_line_equation(y1, y2, colors[i1][2], colors[i2][2], &m_b_left, &b_b_left);
+			get_line_equation(y1, y3, colors[i1][2], colors[i3][2], &m_b_right, &b_b_right);
+			get_line_equation(y1, y2, colors[i1][3], colors[i2][3], &m_a_left, &b_a_left);
+			get_line_equation(y1, y3, colors[i1][3], colors[i3][3], &m_a_right, &b_a_right);
 			}
-		else { // vertex i3 is on the left
+		else { 
 			get_line_equation(y1, y3, x1, x3, &m_x_left, &b_x_left);
 			get_line_equation(y1, y2, x1, x2, &m_x_right, &b_x_right);
 			get_line_equation(y1, y3, z1, z3, &m_z_left, &b_z_left);
 			get_line_equation(y1, y2, z1, z2, &m_z_right, &b_z_right);
+			
+			// adding rgb colors
+			get_line_equation(y1, y3, colors[i1][0], colors[i3][0], &m_r_left, &b_r_left);
+			get_line_equation(y1, y2, colors[i1][0], colors[i2][0], &m_r_right, &b_r_right);
+			get_line_equation(y1, y3, colors[i1][1], colors[i3][1], &m_g_left, &b_g_left);
+			get_line_equation(y1, y2, colors[i1][1], colors[i2][1], &m_g_right, &b_g_right);
+			get_line_equation(y1, y3, colors[i1][2], colors[i3][2], &m_b_left, &b_b_left);
+			get_line_equation(y1, y2, colors[i1][2], colors[i2][2], &m_b_right, &b_b_right);
+			get_line_equation(y1, y3, colors[i1][3], colors[i3][3], &m_a_left, &b_a_left);
+			get_line_equation(y1, y2, colors[i1][3], colors[i2][3], &m_a_right, &b_a_right);
 			}
 		}
-	else { // bottom vertex i3 is on both both non-horizontal edges
-		if (vertices[i1][0] < vertices[i2][0]) { // vertex i1 is on the left
+	else {
+		if (vertices[i1][0] < vertices[i2][0]) { 
 			get_line_equation(y1, y3, x1, x3, &m_x_left, &b_x_left);
 			get_line_equation(y2, y3, x2, x3, &m_x_right, &b_x_right);
 			get_line_equation(y1, y3, z1, z3, &m_z_left, &b_z_left);
 			get_line_equation(y2, y3, z2, z3, &m_z_right, &b_z_right);
+			// adding rgb color
+			get_line_equation(y1, y3, colors[i1][0], colors[i3][0], &m_r_left, &b_r_left);
+			get_line_equation(y2, y3, colors[i2][0], colors[i3][0], &m_r_right, &b_r_right);
+			get_line_equation(y1, y3, colors[i1][1], colors[i3][1], &m_g_left, &b_g_left);
+			get_line_equation(y2, y3, colors[i2][1], colors[i3][1], &m_g_right, &b_g_right);
+			get_line_equation(y1, y3, colors[i1][2], colors[i3][2], &m_b_left, &b_b_left);
+			get_line_equation(y2, y3, colors[i2][2], colors[i3][2], &m_b_right, &b_b_right);
+			get_line_equation(y1, y3, colors[i1][3], colors[i3][3], &m_a_left, &b_a_left);
+			get_line_equation(y2, y3, colors[i2][3], colors[i3][3], &m_a_right, &b_a_right);
 			}
-		else { // vertex i2 is on the left
+		else { 
 			get_line_equation(y2, y3, x2, x3, &m_x_left, &b_x_left);
 			get_line_equation(y1, y3, x1, x3, &m_x_right, &b_x_right);
 			get_line_equation(y2, y3, z2, z3, &m_z_left, &b_z_left);
 			get_line_equation(y1, y3, z1, z3, &m_z_right, &b_z_right);
+
+			get_line_equation(y2, y3, colors[i2][0], colors[i3][0], &m_r_left, &b_r_left);
+			get_line_equation(y1, y3, colors[i1][0], colors[i3][0], &m_r_right, &b_r_right);
+			get_line_equation(y2, y3, colors[i2][1], colors[i3][1], &m_g_left, &b_g_left);
+			get_line_equation(y1, y3, colors[i1][1], colors[i3][1], &m_g_right, &b_g_right);
+			get_line_equation(y2, y3, colors[i2][2], colors[i3][2], &m_b_left, &b_b_left);
+			get_line_equation(y1, y3, colors[i1][2], colors[i3][2], &m_b_right, &b_b_right);
+			get_line_equation(y2, y3, colors[i2][3], colors[i3][3], &m_a_left, &b_a_left);
+			get_line_equation(y1, y3, colors[i1][3], colors[i3][3], &m_a_right, &b_a_right);
 			}
+			
+			
+
 		}
 	if (side == 1) {
 		m_x_left = m;
@@ -152,17 +197,47 @@ void draw_horizontal_edge_triangle(int i1, int i2, int i3, int kind,
 		xleft = m_x_left*y + b_x_left;
 		xright = m_x_right*y + b_x_right;
 		i_left = ceil(xleft - .5);
+
+		// adding z axis
 		zleft = m_z_left*y + b_z_left;
 		zright = m_z_right*y + b_z_right;
+		
+		// doing same for the rgb color
+		rleft = m_r_left*y + b_r_left;
+		rright = m_r_right*y + b_r_right;
+
+		gleft = m_g_left*y + b_g_left;
+		gright = m_g_right*y + b_g_right;
+
+		bleft = m_b_left*y + b_b_left;
+		bright = m_b_right*y + b_b_right;
+
+		aleft = m_a_left*y + b_a_left;
+		aright = m_a_right*y + b_a_right;
+
 		m_z = (zright - zleft) / (xright - xleft);
+		m_r = (rright - rleft) / (xright - xleft);
+		m_g = (gright - gleft) / (xright - xleft);
+		m_b = (bright - bleft) / (xright - xleft);
+		m_a = (aright - aleft) / (xright - xleft);
 		if (i_left < 0)
 			i_left = 0;
 		if (xright > width)
 			xright = width;
+
 		z = zleft + m_z * (i_left + .5 - xleft);
+		r = rleft + m_r * (i_left + .5 - xleft);
+		g = gleft + m_g * (i_left + .5 - xleft);
+		b = bleft + m_b * (i_left + .5 - xleft);
+		a = aleft + m_a * (i_left + .5 - xleft);
 		for (x = i_left + .5; x < xright; x += 1) {
 			set_pixel_alpha_z((int)floor(x), (int)floor(y), r, g, b, a, z);
+	
 			z += m_z;
+			r += m_r;
+			g += m_g;
+			b += m_b;
+			a += m_a;
 		}
 	}
 }
@@ -241,6 +316,16 @@ void draw_triangle(int i) {
 	                  vertex[top_index][0], vertex[bottom_index][0], &m_x, &b_x);
 	get_line_equation(vertex[top_index][1], vertex[bottom_index][1],
 	                  vertex[top_index][2], vertex[bottom_index][2], &m_z, &b_z);
+	// adding colors 
+	get_line_equation(vertex[top_index][1], vertex[bottom_index][1],
+	                  color[top_index][0], color[bottom_index][0], &m_r, &b_r);	
+	get_line_equation(vertex[top_index][1], vertex[bottom_index][1],
+	                  color[top_index][1], color[bottom_index][1], &m_g, &b_g);
+	get_line_equation(vertex[top_index][1], vertex[bottom_index][1],
+	                  color[top_index][2], color[bottom_index][2], &m_b, &b_b);
+	get_line_equation(vertex[top_index][1], vertex[bottom_index][1],
+	                  color[top_index][3], color[bottom_index][3], &m_a, &b_a);			
+
 	xmiddle = vertices[index[middle_index]][0];
 	ymiddle = vertices[index[middle_index]][1];
 	if (xmiddle > m_x*ymiddle + b_x)
@@ -250,6 +335,12 @@ void draw_triangle(int i) {
 	vertices[13][0] = m_x*ymiddle + b_x;
 	vertices[13][1] = ymiddle;
 	vertices[13][2] = m_z*ymiddle + b_z;
+	colors[13][0] = m_r*ymiddle + b_r;
+	colors[13][1] = m_g*ymiddle + b_g;
+	colors[13][2] = m_b*ymiddle + b_b;
+	colors[13][3] = m_a*ymiddle + b_a;
+	
+
 	draw_horizontal_edge_triangle(index[top_index], index[middle_index], 13, 1, side, m_x, b_x, i);
 	draw_horizontal_edge_triangle(index[middle_index], 13, index[bottom_index], 0, side, m_x, b_x, i);
 	}
