@@ -1,0 +1,42 @@
+.main_layout{
+    width: 80%;
+    margin-left: 10%;
+    border: 2px solid black;
+}
+.heading{
+    text-align: center;
+    background-color: rgb(233, 193, 241);
+    height: 90px;
+    padding-top: 10px;
+}
+.first_question{
+    width: 90%;
+    margin-left: 5%;
+    text-align: center;
+    margin-top: 3%;
+    margin-bottom: 2%;
+    border: 1px solid rgb(238, 173, 235);
+
+}
+
+.first_plot{
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 1%;
+    border: 1px solid rgb(238, 173, 235);
+}
+.second_plot{
+    width: 90%;
+    margin-left: 5%;
+    padding-top: 2%;
+    margin-top: 1%;
+    border: 1px solid rgb(238, 173, 235);
+}
+
+.third_plot{
+    width: 90%;
+    margin-left: 5%;
+    padding-top: 2%;
+    margin-top: 1%;
+    border: 1px solid rgb(238, 173, 235);
+}
